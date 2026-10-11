@@ -25,7 +25,7 @@ export default {
 
     // --- SEO / Open Graph -----------------------------------------------
     meta: {
-        title: 'Portal de Transferencia, Rafael Montero',
+        title: 'Portal de Transferencia Ing. Montero',
         description: 'Portal de transferencia simple, claro y seguro.',
         // URL de production absolue (ex. 'https://xxx.vercel.app/') —
         // nécessaire pour l'aperçu WhatsApp. Vide tant qu'elle n'existe pas.
