@@ -88,8 +88,8 @@ function BankCard(account) {
 // ---------------------------------------------------------------------
 const ogImage = absolute(scalia.ogImage);
 const usedBanks = Object.fromEntries(accounts.map((a) => {
-    const { appLink, androidPackage, androidStore, iosStore } = banks[a.bank] || {};
-    return [a.bank, { appLink, androidPackage, androidStore, iosStore }];
+    const { appLink, iosScheme, iosStore, android } = banks[a.bank] || {};
+    return [a.bank, { appLink, iosScheme, iosStore, android }];
 }));
 
 const html = `<!DOCTYPE html>

@@ -3,56 +3,73 @@
 //  Une entrée = logo + palette de carte + ouverture de l'app bancaire.
 //  Pour ajouter une banque : logo dans assets/banks/, puis une entrée ici.
 //
-//  Ouverture de l'app (testé sur appareils réels) :
-//    appLink         → HTTPS Universal Link / App Link vérifié (iOS + Android)
-//    androidPackage  → intent:// avec repli Play Store (Chrome Android)
-//    iosStore        → fiche App Store (aucun lien profond iOS vérifié)
+//  iOS (testé sur iPhone réel) :
+//    iosScheme  → schéma custom validé physiquement (popup "Ouvrir dans…")
+//    appLink    → Universal Link vérifié (AASA) — utilisé si pas d'iosScheme
+//    iosStore   → fiche App Store (fallback iOS)
+//
+//  Android — le package est la source de vérité (androidApp()) :
+//    packageName → package vérifié sur Google Play
+//    directLink  → ouverture directe de l'app, UNIQUEMENT si confirmée :
+//                  App Link https (assetlinks.json) ou schéma custom testé sur Android
+//    marketUrl   → market://details?id=<package>  — fiche Play Store (validé physiquement)
+//    storeUrl    → https://play.google.com/store/apps/details?id=<package> — fallback final
 // =====================================================================
+
+/** Construit la config Android d'une banque à partir de son package. */
+function androidApp(packageName, directLink = null) {
+    return {
+        packageName,
+        directLink,
+        marketUrl: `market://details?id=${packageName}`,
+        storeUrl: `https://play.google.com/store/apps/details?id=${packageName}`,
+    };
+}
 
 export default {
     banreservas: {
         name: 'Banreservas',
         logo: 'assets/banks/banreservas.png',
         colors: { c1: '#0B72BC', c2: '#04264A', accent: '#22C3F3' },
+        iosScheme: 'tubancoapp://',   // validé iPhone 2026-10-12
         appLink: null,
-        androidPackage: 'com.banreservas.tubancoappmobile',
-        androidStore: 'https://play.google.com/store/apps/details?id=com.banreservas.tubancoappmobile',
         iosStore: 'https://apps.apple.com/do/app/banreservas/id1170610154',
+        android: androidApp('com.banreservas.tubancoappmobile'),   // market:// validé Android 2026-10-12
     },
     popular: {
         name: 'Banco Popular',
         logo: 'assets/banks/popular.png',
         colors: { c1: '#1A3F98', c2: '#060F33', accent: '#5C8DFF' },
+        iosScheme: 'popular://',   // validé iPhone 2026-10-12
         appLink: null,
-        androidPackage: 'com.popular.app.android',
-        androidStore: 'https://play.google.com/store/apps/details?id=com.popular.app.android',
         iosStore: 'https://apps.apple.com/do/app/banco-popular-dominicano/id583475424',
+        android: androidApp('com.popular.app.android'),   // market:// validé Android 2026-10-12
     },
     bhd: {
         name: 'Banco BHD',
         logo: 'assets/banks/bhd.png',
         colors: { c1: '#0E8C47', c2: '#032B16', accent: '#5BE08F' },
+        iosScheme: 'com.do.bhd.V4TLL69EK8://',   // validé iPhone 2026-10-12
         appLink: 'https://link.bhd.com.do/',
-        androidPackage: null,
-        androidStore: null,
         iosStore: null,
+        // App Link vérifié (assetlinks.json + Google Digital Asset Links)
+        android: androidApp('com.artech.infocorp_bhd.bhd', 'https://link.bhd.com.do/'),
     },
     apap: {
         name: 'Asociación APAP',
         logo: 'assets/banks/apap.png',
         colors: { c1: '#2459B8', c2: '#0A1A3C', accent: '#F5C518', glow: '#4F8BEA' },
         appLink: 'https://movil.apap.com.do/',
-        androidPackage: null,
-        androidStore: null,
         iosStore: null,
+        // App Link vérifié (assetlinks.json + Google Digital Asset Links)
+        android: androidApp('com.apapmovilprod', 'https://movil.apap.com.do/'),
     },
     adopem: {
         name: 'Banco Adopem',
         logo: 'assets/banks/adopem.png',
         colors: { c1: '#E8701A', c2: '#5E2203', accent: '#FFB066' },
         appLink: null,
-        androidPackage: 'org.mfbbva.mobile.adp',
-        androidStore: 'https://play.google.com/store/apps/details?id=org.mfbbva.mobile.adp',
         iosStore: 'https://apps.apple.com/do/app/appdopem/id1516815961',
+        android: androidApp('org.mfbbva.mobile.adp'),   // market:// validé Android 2026-10-12
     },
 };
