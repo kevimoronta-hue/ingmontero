@@ -90,7 +90,8 @@ function platformName() {
 
 /**
  * Choisit comment ouvrir l'app bancaire. Toutes les données viennent de src/banks.mjs.
- *   ANDROID : 1. directLink confirmé — App Link https (intent ciblé sur le package)
+ *   ANDROID : 1. directLink confirmé — ouvert tel quel si directLinkPlain (BHD),
+ *                sinon App Link https (intent ciblé sur le package)
  *                ou schéma custom testé sur Android (intent scheme + package),
  *                avec fallback Play Store porté par l'intent
  *             2. market://details?id=<package>  (fiche Play Store, validé physiquement)
@@ -103,6 +104,9 @@ function resolveBankLaunch(bank) {
         const a = bank.android;
         if (!a) return null;
         const fb = a.storeUrl ? `S.browser_fallback_url=${encodeURIComponent(a.storeUrl)};` : '';
+        if (a.directLink && a.directLinkPlain) {
+            return { method: 'android-directlink', url: a.directLink, fallback: null };
+        }
         if (a.directLink && a.packageName) {
             if (/^https:\/\//i.test(a.directLink)) {
                 const u = new URL(a.directLink);

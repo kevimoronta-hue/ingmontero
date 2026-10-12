@@ -16,11 +16,15 @@
 //    storeUrl    → https://play.google.com/store/apps/details?id=<package> — fallback final
 // =====================================================================
 
-/** Construit la config Android d'une banque à partir de son package. */
-function androidApp(packageName, directLink = null) {
+/**
+ * Construit la config Android d'une banque à partir de son package.
+ * opts.plain = true → le directLink est ouvert tel quel (sans intent) — cas BHD.
+ */
+function androidApp(packageName, directLink = null, opts = {}) {
     return {
         packageName,
         directLink,
+        directLinkPlain: !!opts.plain,
         marketUrl: `market://details?id=${packageName}`,
         storeUrl: `https://play.google.com/store/apps/details?id=${packageName}`,
     };
@@ -49,11 +53,10 @@ export default {
         name: 'Banco BHD',
         logo: 'assets/banks/bhd.png',
         colors: { c1: '#0E8C47', c2: '#032B16', accent: '#5BE08F' },
-        iosScheme: 'com.do.bhd.V4TLL69EK8://',   // validé iPhone 2026-10-12
+        // Lien direct BHD, prioritaire sur iOS ET Android (ouvre l'app ; sinon page officielle BHD)
         appLink: 'https://link.bhd.com.do/',
         iosStore: null,
-        // App Link vérifié (assetlinks.json + Google Digital Asset Links)
-        android: androidApp('com.artech.infocorp_bhd.bhd', 'https://link.bhd.com.do/'),
+        android: androidApp('com.artech.infocorp_bhd.bhd', 'https://link.bhd.com.do/', { plain: true }),
     },
     apap: {
         name: 'Asociación APAP',
